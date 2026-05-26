@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Student Records — Daraga National High School</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+</head>
+
+<body>
+<div class="wrapper">
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">
+        <img src="images/dnhs_logo.jpg" alt="DNHS"/>
+      </div>
+      <div class="logo-text">
+        <h1>DARAGA NATIONAL HIGH SCHOOL</h1>
+        <p>Student Performance Database &nbsp;·&nbsp; School ID: 301825</p>
+      </div>
+    </div>
+    <div class="header-badge">S.Y. 2025–2026</div>
+  </header>
+
+  <!-- ── Stats ── -->
+  <div class="stats">
+    <div class="stat stat--total">
+      <div class="stat-num" id="statTotal">—</div>
+      <div class="stat-label">Total Students</div>
+    </div>
+    <div class="stat stat--male">
+      <div class="stat-num" id="statMale">—</div>
+      <div class="stat-label">Male</div>
+    </div>
+    <div class="stat stat--female">
+      <div class="stat-num" id="statFemale">—</div>
+      <div class="stat-label">Female</div>
+    </div>
+    <div class="stat stat--sections">
+      <div class="stat-num" id="statSections">—</div>
+      <div class="stat-label">Sections</div>
+    </div>
+  </div>
+
+  <!-- ── Controls ── -->
+  <div class="controls">
+    <div class="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input type="search" id="searchInput" placeholder="Search by name, section, municipality, or barangay…"/>
+    </div>
+    <button class="btn btn-primary" onclick="openAddModal()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+      Add Student
+    </button>
+  </div>
+
+  <!-- ── Table ── -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>LRN</th>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Birthdate</th>
+          <th>Section</th>
+          <th>Adviser</th>
+          <th>Address</th>
+          <th>Actions</th>
+          <th>Attendance</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td colspan="8"><div class="empty-state"><p>Loading…</p></div></td></tr>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <span id="paginationInfo">Showing 0 records</span>
+      <div class="page-btns" id="pageButtons"></div>
+    </div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<!-- ══════════════════════════════════════════
+     Add / Edit Modal
+══════════════════════════════════════════ -->
+<div class="overlay" id="formOverlay">
+  <div class="modal modal--form">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Add New Student</span>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+
+        <!-- LRN (add only) -->
+        <div class="field full" id="lrnField">
+          <label>Student LRN *</label>
+          <input type="text" id="fStudLrn" placeholder="e.g. 12345678" maxlength="9"/>
+          <span class="field-err" id="errStudLrn">Numeric LRN up to 8 digits is required.</span>
+        </div>
+
+        <div class="field">
+          <label>First Name *</label>
+          <input type="text" id="fFirstName" placeholder="e.g. Aljon"/>
+          <span class="field-err" id="errFirstName">First name is required.</span>
+        </div>
+        <div class="field">
+          <label>Last Name *</label>
+          <input type="text" id="fLastName" placeholder="e.g. Borja"/>
+          <span class="field-err" id="errLastName">Last name is required.</span>
+        </div>
+        <div class="field full">
+          <label>Middle Name</label>
+          <input type="text" id="fMiddleName" placeholder="e.g. Belen (optional)"/>
+        </div>
+
+        <div class="field">
+          <label>Birthdate *</label>
+          <input type="date" id="fBirthdate"/>
+          <span class="field-err" id="errBirthdate">Birthdate is required.</span>
+        </div>
+        <div class="field">
+          <label>Gender *</label>
+          <select id="fGender">
+            <option value="">— Select —</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+          <span class="field-err" id="errGender">Gender is required.</span>
+        </div>
+
+        <div class="field">
+          <label>Barangay</label>
+          <input type="text" id="fBarangay" placeholder="e.g. Gogon"/>
+        </div>
+        <div class="field">
+          <label>Municipality / City</label>
+          <input type="text" id="fMunicipality" placeholder="e.g. Legazpi City"/>
+        </div>
+
+        <!-- Class Section -->
+        <div class="field full">
+          <label>Class / Section *</label>
+          <select id="fClass">
+            <option value="">— Select Section —</option>
+          </select>
+          <span class="field-err" id="errClass">Class/Section is required.</span>
+        </div>
+
+        <!-- Adviser -->
+        <div class="field full">
+          <label>Adviser *</label>
+          <select id="fAdviser">
+            <option value="">— Select Adviser —</option>
+          </select>
+          <span class="field-err" id="errAdviser">Adviser is required.</span>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Save Student</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     Student Detail / Profile Drawer
+══════════════════════════════════════════ -->
+<div class="overlay" id="profileOverlay">
+  <div class="modal modal--profile">
+    <div class="modal-header">
+      <span class="modal-title">Student Profile</span>
+      <button class="modal-close" onclick="closeProfile()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="profileBody">
+      <div class="profile-loading">Loading…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     Delete Confirm Modal
+══════════════════════════════════════════ -->
+<div class="overlay" id="confirmOverlay">
+  <div class="modal modal--confirm">
+    <div class="modal-body">
+      <div class="confirm-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2">
+          <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
+        </svg>
+      </div>
+      <h3>Delete Student?</h3>
+      <p id="confirmText">This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer modal-footer--center">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toastMsg"></span>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
